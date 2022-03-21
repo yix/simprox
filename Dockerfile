@@ -1,7 +1,8 @@
+ARG ARCH=
 FROM rust:slim-buster as builder
 
 RUN rustup update
-RUN rustup target add x86_64-unknown-linux-musl
+RUN rustup target add ${ARCH}-unknown-linux-musl
 RUN rustup toolchain install stable
 
 RUN apt-get update && \
