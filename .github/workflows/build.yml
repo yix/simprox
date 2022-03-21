@@ -1,122 +1,25 @@
-name: Build release
+name: build image
 
 on:
   push:
     tags:
-      - 'v*'
+    - 'v*'
 
 jobs:
-  create-release:
-    name: Create github release
-    runs-on: ubuntu-latest
-    steps:
-    - name: Create Github release draft
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        draft: true
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-
-    - name: Save release-upload-url and release-id for later use
-      shell: bash
-      run: |
-        mkdir artifacts
-        echo "${{ steps.create_release.outputs.upload_url }}" > artifacts/release-upload-url
-        echo "${{ steps.create_release.outputs.id }}" > artifacts/release-id
-
-    - name: Upload release information
-      uses: actions/upload-artifact@v1
-      with:
-        name: artifacts
-        path: artifacts
-
   build:
-    name: Build for ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        name: [
-            linux,
-            windows,
-            macos
-        ]
-
-        include:
-          - name: linux
-            os: ubuntu-latest
-            asset_path: target/release/simprox
-            asset_name: simprox-linux-amd64
-          - name: windows
-            os: windows-latest
-            asset_path: target/release/simprox.exe
-            asset_name: simprox-windows-amd64.exe
-          - name: macos
-            os: macos-latest
-            asset_path: target/release/simprox
-            asset_name: simprox-macos-amd64
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-
-    - name: Setup rust toolchain cache
-      uses: Swatinem/rust-cache@v1
-
-    - name: Build
-      run: cargo build --release --locked
-  
-    - name: Strip release binary (linux and macos)
-      if: matrix.name == 'linux' || matrix.name == 'macos'
-      run: strip "target/release/simprox"
-
-    - name: Download artifacts
-      uses: actions/download-artifact@v1
-      with:
-        name: artifacts
-        path: artifacts
-
-    - name: Save upload url in ENV
-      shell: bash
-      run: |
-        echo "RELEASE_UPLOAD_URL=$(cat artifacts/release-upload-url)" >> $GITHUB_ENV
-
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ env.RELEASE_UPLOAD_URL }}
-        asset_path: ${{ matrix.asset_path }}
-        asset_name: ${{ matrix.asset_name }}
-        asset_content_type: application/x-executable
-
-  publish:
-    name: Publish github release
-    needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@v1
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: install buildx
+      id: buildx
+      uses: crazy-max/ghaction-docker-buildx@v1
       with:
-        name: artifacts
-        path: artifacts
-
-    - name: Save release id in ENV
-      shell: bash
+        buildx-version: latest
+    - name: login to docker hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: build multi-arch images
       run: |
-        echo "RELEASE_ID=$(cat artifacts/release-id)" >> $GITHUB_ENV
-
-    - uses: eregon/publish-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        release_id: ${{ env.RELEASE_ID }}
+        docker buildx build --push \
+          --tag mcgunn/simprox:latest --tag mcgunn/simprox:$(echo $GITHUB_REF | sed 's|^refs/tags/v||') \
+          --platform linux/amd64,linux/arm/v7,linux/arm64/v8 .

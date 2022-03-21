@@ -1,4 +1,4 @@
-FROM rust:1.52-slim-buster as builder
+FROM rust:slim-buster as builder
 
 RUN rustup update
 RUN rustup target add x86_64-unknown-linux-musl
@@ -11,12 +11,10 @@ RUN apt-get update && \
 WORKDIR /usr/src/myapp
 COPY . .
 
+ENV RUSTFLAGS="-C target-feature=+crt-static"
 RUN cargo build --release --locked
 
 
-FROM debian:buster-slim
-RUN apt-get update && \
-    apt-get install -y libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
-COPY --from=builder /usr/src/myapp/target/release/simprox /usr/local/bin/simprox
-CMD ["simprox"]
+FROM scratch
+COPY --from=builder /usr/src/myapp/target/release/simprox /simprox
+CMD ["/simprox"]
