@@ -4,6 +4,7 @@ ARG TARGETPLATFORM
 RUN case "$TARGETPLATFORM" in \
   "linux/amd64") echo -n x86_64-unknown-linux-musleabihf > /rust_target.txt ;; \
   "linux/arm64/v8") echo -n aarch64-unknown-linux-musleabihf > /rust_target.txt ;; \
+  "linux/arm64") echo -n aarch64-unknown-linux-musleabihf > /rust_target.txt ;; \
   "linux/arm/v7") echo -n armv7-unknown-linux-musleabihf > /rust_target.txt ;; \
   *) exit 1 ;; \
 esac
