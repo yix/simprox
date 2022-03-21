@@ -1,6 +1,7 @@
 ARG ARCH=
 FROM rust:slim-buster as builder
 
+RUN echo ">>>>>>> Building for arch: ${ARCH}"
 RUN rustup update
 RUN rustup target add ${ARCH}-unknown-linux-musl
 RUN rustup toolchain install stable
