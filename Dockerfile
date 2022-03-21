@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:slim-buster as builder
+FROM --platform=$BUILDPLATFORM rust:alpine3.15 as builder
 
 ARG TARGETPLATFORM
 RUN case "$TARGETPLATFORM" in \
@@ -15,9 +15,9 @@ RUN rustup update
 RUN rustup target add $(cat /rust_target.txt)
 RUN rustup toolchain install stable
 
-RUN apt-get update && \
-    apt-get install -y libssl-dev pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y libssl-dev pkg-config && \
+#    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/myapp
 COPY . .
