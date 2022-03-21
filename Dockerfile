@@ -2,7 +2,7 @@ FROM --platform=$BUILDPLATFORM rust:slim-buster as builder
 
 ARG TARGETPLATFORM
 
-RUN echo ">>>>>>> Building for arch: ${$TARGETPLATFORM}"
+RUN echo ">>>>>>> Building for arch: ${TARGETPLATFORM}"
 RUN case "$TARGETPLATFORM" in \
   "linux/amd64") echo -n x86_64-unknown-linux-musl > /rust_target.txt ;; \
   "linux/arm64/v8") echo -n aarch64-unknown-linux-musl > /rust_target.txt ;; \
