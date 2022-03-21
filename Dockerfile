@@ -1,4 +1,4 @@
-ARG ARCH=
+ARG ARCH=x86_64
 FROM rust:slim-buster as builder
 
 RUN echo ">>>>>>> Building for arch: ${ARCH}"
