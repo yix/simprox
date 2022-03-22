@@ -1,3 +1,4 @@
+ARG BUILDPLATFORM
 FROM --platform=$BUILDPLATFORM rust:slim-buster as builder
 
 ARG TARGETPLATFORM
@@ -25,7 +26,9 @@ COPY . .
 #ENV RUSTFLAGS="-C target-feature=+crt-static"
 RUN cargo build --release --locked
 
-
-FROM scratch
+FROM --platform=$TARGETPLATFORM debian:buster-slim
+RUN apt-get update && \
+    apt-get install -y libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
 COPY --from=builder /usr/src/myapp/target/release/simprox /simprox
 CMD ["/simprox"]
