@@ -1,7 +1,7 @@
 # simprox
 
 [![build image](https://github.com/yix/simprox/actions/workflows/build.yml/badge.svg)](https://github.com/yix/simprox/actions/workflows/build.yml)
-[![Docker build](https://img.shields.io/docker/cloud/automated/mcgunn/simprox.svg)](https://hub.docker.com/r/mcgunn/simprox)
+[![build image](https://github.com/yix/simprox/actions/workflows/build.yml/badge.svg)](https://github.com/yix/simprox/actions/workflows/build.yml)
 
 | **Sim**ple **Prox**y Server
 
