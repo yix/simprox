@@ -1,5 +1,5 @@
 ARG BUILDPLATFORM
-FROM --platform=$BUILDPLATFORM rust:slim-buster as builder
+FROM rust:slim-buster as builder
 
 ARG TARGETPLATFORM
 
