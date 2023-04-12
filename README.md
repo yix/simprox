@@ -1,9 +1,11 @@
 # simprox
 
 [![build image](https://github.com/yix/simprox/actions/workflows/build.yml/badge.svg)](https://github.com/yix/simprox/actions/workflows/build.yml)
-[![Docker build](https://img.shields.io/docker/cloud/automated/cars10/simprox.svg)](https://hub.docker.com/r/cars10/simprox)
+[![Docker build](https://img.shields.io/docker/cloud/automated/mcgunn/simprox.svg)](https://hub.docker.com/r/mcgunn/simprox)
 
 | **Sim**ple **Prox**y Server
+
+(!) This is a fork of the https://github.com/cars10/simprox adding multi-arch support
 
 Simprox is a fast and simple local proxy server.
 
@@ -15,14 +17,14 @@ It forwards the complete original request to your proxy target and returns the r
 
 ### Binary
 
-You can download the latest binary for linux, macos and windows from [github](https://github.com/cars10/simprox/releases).
+You can download the latest binary for linux, macos and windows from [github](https://github.com/yix/simprox/releases).
 
 ### Docker
 
-Download the [image](https://hub.docker.com/r/cars10/simprox):
+Download the [image](https://hub.docker.com/r/mcgunn/simprox):
 
 ```bash
-docker pull cars10/simprox
+docker pull mcgunn/simprox
 ```
 
 ## Usage
