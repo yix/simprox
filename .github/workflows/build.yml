@@ -23,3 +23,8 @@ jobs:
         docker buildx build --push \
           --tag mcgunn/simprox:latest --tag mcgunn/simprox:$(echo $GITHUB_REF | sed 's|^refs/tags/v||') \
           --platform linux/amd64,linux/arm64 .
+    - name: build multi-arch alpine images
+      run: |
+        docker buildx build --push \
+          --tag mcgunn/simprox:latest --tag mcgunn/simprox:$(echo $GITHUB_REF | sed 's|^refs/tags/v||') \
+          --platform linux/amd64,linux/arm64 .
