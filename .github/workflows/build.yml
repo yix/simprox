@@ -26,5 +26,5 @@ jobs:
     - name: build multi-arch alpine images
       run: |
         docker buildx build --file Dockerfile.alpine --push \
-          --tag mcgunn/simprox:latest --tag mcgunn/simprox:$(echo $GITHUB_REF | sed 's|^refs/tags/v||') \
+          --tag mcgunn/simprox:latest-alpine --tag mcgunn/simprox:$(echo $GITHUB_REF | sed 's|^refs/tags/v||')-alpine \
           --platform linux/amd64,linux/arm64 .
